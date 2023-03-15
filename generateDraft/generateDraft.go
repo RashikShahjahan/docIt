@@ -1,4 +1,4 @@
-package docIt
+package generateDraft
 
 import (
 	"os"
@@ -57,10 +57,9 @@ func createDesc(code string) string {
 	if err != nil {
 		panic(err)
 	}
-
 	desc := resp.Choices[0].Message.Content
-
 	return desc
+
 }
 
 func generateFunctions(desc string) string {
@@ -71,7 +70,7 @@ func generateFunctions(desc string) string {
 		Messages: []*gpt35.Message{
 			{
 				Role:    gpt35.RoleSystem,
-				Content: "You are a helpful assistant who drafts code usage documentation in Markdown format from content's of a function description file.",
+				Content: "You are a helpful assistant who drafts code documentation in Markdown format from content's of a function description file.",
 			},
 			{
 				Role:    gpt35.RoleUser,
@@ -114,7 +113,7 @@ func createBlocksOfMaxTokens(functionBlocks []string) []string {
 	blocksOfMaxTokens := []string{}
 	currentChunk := []string{}
 	for _, block := range functionBlocks {
-		block = regexp.MustCompile(`(\"\"\"|''')[\s\S]*?\1`).ReplaceAllString(block, `""`)
+		block = regexp.MustCompile(`(\"\"\"|''')[\s\S]*?`).ReplaceAllString(block, `""`)
 		var s scanner.Scanner
 		s.Init(strings.NewReader(block))
 		tokenCount := 0
