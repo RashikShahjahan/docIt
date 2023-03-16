@@ -1,9 +1,10 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"github.com/RashikShahjahan/docIt/generateDraft"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -31,55 +32,33 @@ var extToLang = map[string]string{
 	".c":     "C",
 }
 
-func init() {
-	flag.BoolVar(&help, "help", false, "display help message")
-	flag.StringVar(&inputFile, "input-file", "", "path to input file")
-	flag.StringVar(&outputFile, "out-file", "", "path to output file")
-}
-
 func main() {
-	flag.Parse()
-
-	if help {
-		flag.Usage()
-		return
-	}
-
-	if inputFile == "" {
-		fmt.Println("Please specify an input file with the -input-file flag.")
-		return
-	}
-
-	input, err := ioutil.ReadFile(inputFile)
-	if err != nil {
-		fmt.Printf("Error reading input file: %v\n", err)
-		return
-	}
-	ext := filepath.Ext(inputFile)
-	language := extToLang[ext]
-
-	// Create channel to wait for background processing to complete
-	done := make(chan bool)
-
-	// Start background processing
-	go runBackground(string(input), language, done)
-
-	// Wait for background processing to complete
-	<-done
-
-}
-
-func runBackground(input string, language string, done chan<- bool) {
-	output := generateDraft.generateDraft(string(input), language)
-
-	if outputFile == "" {
-		fmt.Println(output)
-	} else {
-		err := ioutil.WriteFile(outputFile, []byte(output), 0644)
+	args := os.Args
+	for i := range args {
+		input, err := ioutil.ReadFile(args[i])
 		if err != nil {
-			fmt.Printf("Error writing output file: %v\n", err)
+			fmt.Printf("Error reading input file: %v\n", err)
 			return
 		}
+		ext := filepath.Ext(args[i])
+
+		if language, ok := extToLang[ext]; ok {
+			done := make(chan bool)
+
+			go singleFile(string(input), language, args[i][:len(args[i])-len(ext)]+".md", done)
+
+			<-done
+		}
+
+	}
+}
+
+func singleFile(input string, language string, outputFile string, done chan<- bool) {
+	output := generateDraft.GenerateDraft(string(input), language)
+	err := ioutil.WriteFile(outputFile, []byte(output), 0644)
+	if err != nil {
+		fmt.Printf("Error writing output file: %v\n", err)
+		return
 	}
 	done <- true
 }

@@ -27,7 +27,7 @@ var languageRegex = map[string]*regexp.Regexp{
 	"C":          regexp.MustCompile(`^\s*(\w+\s+)+\s*(?P<function_name>\w+)\s*\(`),
 }
 
-func generateDraft(code string, language string) string {
+func GenerateDraft(code string, language string) string {
 	codeArray := splitCodeByFunction(code, languageRegex[language])
 	codeChunks := createBlocksOfMaxTokens(codeArray)
 	libDesc := processBlocks(codeChunks, createDesc)
@@ -40,7 +40,8 @@ func createDesc(code string) string {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	c := gpt35.NewClient(apiKey)
 	req := &gpt35.Request{
-		Model: gpt35.ModelGpt35Turbo,
+		Model:       gpt35.ModelGpt35Turbo,
+		Temperature: 0,
 		Messages: []*gpt35.Message{
 			{
 				Role:    gpt35.RoleSystem,
@@ -66,7 +67,9 @@ func generateFunctions(desc string) string {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	c := gpt35.NewClient(apiKey)
 	req := &gpt35.Request{
-		Model: gpt35.ModelGpt35Turbo,
+		Model:       gpt35.ModelGpt35Turbo,
+		Temperature: 0,
+
 		Messages: []*gpt35.Message{
 			{
 				Role:    gpt35.RoleSystem,

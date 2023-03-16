@@ -1,2 +1,4 @@
 github.com/AlmazDelDiablo/gpt3-5-turbo-go v0.0.0-20230301215351-50b92e802770 h1:FS1Y5+9pD8i9F/bdlXMwMTQ1CkmoFhJtZS09ZtAMEt0=
 github.com/AlmazDelDiablo/gpt3-5-turbo-go v0.0.0-20230301215351-50b92e802770/go.mod h1:YIMTfMuAcNgfs9wdX5NRs9GhLlj/JZFgAfwfLRli2Tc=
+github.com/KyleBanks/depth v1.2.1 h1:5h8fQADFrWtarTdtDudMmGsC7GPbOAu6RVB3ffsVFHc=
+github.com/KyleBanks/depth v1.2.1/go.mod h1:jzSb9d0L43HxTQfT+oSA1EEp2q+ne2uh6XgeJcm8brE=
